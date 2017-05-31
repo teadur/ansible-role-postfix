@@ -9,7 +9,6 @@ aliases_file = "/etc/aliases"
 aliases_default_hash = { "postmaster" => "root" }
 default_user = "root"
 default_group = "root"
-extra_package = ["pflogsumm"]
 
 case os[:family]
 when "freebsd"
@@ -24,7 +23,6 @@ when "openbsd"
   aliases_default_hash = { "MAILER-DAEMON" => "postmaster", "_dhcp" => "/dev/null", "_bgpd" => "/dev/null" }
 when "redhat"
   aliases_default_hash = { "mailer-daemon" => "postmaster", "ftpadmin" => "ftp", "ftp-adm" => "ftp", "marketing" => "postmaster" }
-  extra_package = ["postfix-perl-scripts"]
 end
 
 db_dir = "#{conf_dir}/db"
@@ -33,12 +31,6 @@ master_cf = "#{conf_dir}/master.cf"
 
 describe package(package) do
   it { should be_installed }
-end
-
-extra_package.each do |p|
-  describe package(p) do
-    it { should be_installed }
-  end
 end
 
 case os[:family]
@@ -86,14 +78,14 @@ describe file(aliases_file) do
   it { should be_mode 644 }
   its(:content) { should match(/^dave\.null:\s+root$/) }
   aliases_default_hash.each do |k, v|
-    its(:content) { should match(/^#{Regexp.escape(k)}:\s+#{Regexp.escape(v)}$/) }
+    its(:content) { should_not match(/^#{Regexp.escape(k)}:\s+#{Regexp.escape(v)}$/) }
   end
 end
 
 aliases_default_hash.each do |k, v|
   describe command("postmap -q #{k} #{aliases_file}") do
-    its(:exit_status) { should eq 0 }
-    its(:stdout) { should match(/^#{Regexp.escape(v)}$/) }
+    its(:exit_status) { should eq 1 }
+    its(:stdout) { should_not match(/^#{Regexp.escape(v)}$/) }
     its(:stderr) { should eq "" }
   end
 end
