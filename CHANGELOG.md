@@ -1,3 +1,11 @@
+## Release 1.3.0
+
+* 81a9c9f [feature] use same defaults for debian 8 and 9
+
+## Release 1.2.0
+
+* ae792ab [feature] support Debian 8.6 (#32)
+
 ## Release 1.1.0
 
 * b12d233 [feature] introduce postfix_extra_packages (#29)
