@@ -10,3 +10,5 @@ __postfix_aliases_default:
     postmaster: root
   "9":
     postmaster: root
+  "buster/sid":
+    postmaster: root
